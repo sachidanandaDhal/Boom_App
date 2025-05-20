@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Alert, Text, StyleSheet } from 'react-native';
+import {
+  View,
+  TextInput,
+  Alert,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import API from '../utils/api';
 
@@ -44,7 +52,7 @@ export default function Upload() {
       uri: file.uri,
       name: file.name,
       type: file.mimeType || 'video/mp4',
-    } as any); // React Native FormData needs 'any' cast for file
+    } as any);
 
     try {
       setUploading(true);
@@ -73,34 +81,76 @@ export default function Upload() {
         onChangeText={setTitle}
         style={styles.input}
       />
-      <Button title="Pick Video" onPress={pickVideo} />
+
+      <TouchableOpacity style={styles.button} onPress={pickVideo}>
+        <Text style={styles.buttonText}>Pick Video</Text>
+      </TouchableOpacity>
+
       {file && <Text style={styles.fileInfo}>Selected: {file.name}</Text>}
-      <Button
-        title={uploading ? 'Uploading...' : 'Upload'}
+
+      <TouchableOpacity
+        style={[styles.button, (!file || uploading) && styles.buttonDisabled]}
         onPress={handleUpload}
         disabled={!file || uploading}
-      />
+      >
+        {uploading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Upload</Text>
+        )}
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    gap: 10,
+    flex: 1,
+    padding: 24,
+    backgroundColor: '#f9fafb',
+    justifyContent: 'center',
   },
   label: {
-    fontWeight: 'bold',
+    fontWeight: '700',
+    fontSize: 18,
+    color: '#222',
+    marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 8,
-    borderRadius: 5,
-    marginBottom: 10,
+    borderColor: '#bbb',
+    backgroundColor: '#fff',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    fontSize: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 3,
+    elevation: 2,
   },
   fileInfo: {
-    marginVertical: 10,
-    color: 'gray',
+    marginVertical: 12,
+    fontStyle: 'italic',
+    color: '#666',
+    textAlign: 'center',
+  },
+  button: {
+    marginVertical: 8,
+    borderRadius: 10,
+    backgroundColor: '#2563eb',
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+  },
+  buttonDisabled: {
+    backgroundColor: '#a5b4fc',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 18,
+    textAlign: 'center',
   },
 });

@@ -3,30 +3,35 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function NavBar() {
   const router = useRouter();
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('token'); // Clear auth token
-      router.replace('/login'); // Navigate to login screen
+      await AsyncStorage.removeItem('token');
+      router.replace('/login');
     } catch (error) {
+      console.log(error);
       Alert.alert('Error', 'Failed to logout. Try again.');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Boom App</Text>
+      <TouchableOpacity onPress={() => router.push('/home')} style={styles.titleContainer}>
+        <Ionicons name="home-outline" size={30} color="#4cd137" />
+        <Text style={styles.title}>Boom App</Text>
+      </TouchableOpacity>
 
       <View style={styles.rightButtons}>
-        <TouchableOpacity style={styles.uploadButton} onPress={() => router.push('/upload')}>
-          <Text style={styles.uploadText}>Upload</Text>
+        <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/upload')}>
+          <Ionicons name="add-circle-outline" size={32} color="#0097e6" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutText}>Logout</Text>
+        <TouchableOpacity style={styles.iconButton} onPress={handleLogout}>
+          <Ionicons name="log-out-outline" size={32} color="#e84118" />
         </TouchableOpacity>
       </View>
     </View>
@@ -35,43 +40,38 @@ export default function NavBar() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 50,
-    paddingBottom: 15,
-    paddingHorizontal: 20,
-    backgroundColor: '#000',
+    paddingTop: 10,           // increased padding top for height
+    paddingBottom: 10,        // increased padding bottom for height
+    paddingHorizontal: 25,
+    backgroundColor: 'green',  // very dark background
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+
+    // subtle shadow for elevation
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
   },
-  title: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  rightButtons: {
+  titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
   },
-  uploadButton: {
-    backgroundColor: '#1e90ff',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    marginRight: 8,
+  title: {
+    color: 'white',        // bright green text color for contrast
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginLeft: 6,
   },
-  uploadText: {
-    color: '#fff',
-    fontWeight: '600',
+  rightButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
   },
-  logoutButton: {
-    backgroundColor: '#ff4d4f',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-  },
-  logoutText: {
-    color: '#fff',
-    fontWeight: '600',
+  iconButton: {
+    padding: 8,
   },
 });
