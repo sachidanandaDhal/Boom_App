@@ -70,7 +70,7 @@ export default function Home() {
         renderItem={({ item, index }) => (
           <VideoCard
             id={item._id}
-            videoUrl={`http://192.168.1.100:5000/api${item.videoUrl}`}
+            videoUrl={`${API.defaults.baseURL}${item.videoUrl}`}
             title={item.title}
             thumbnailUrl={item.thumbnailUrl}
             likes={item.likes}

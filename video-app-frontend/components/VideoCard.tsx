@@ -14,6 +14,7 @@ import { Video, ResizeMode } from 'expo-av';
 import { AntDesign , Feather } from '@expo/vector-icons';
 import API from '../utils/api';
 
+
 interface VideoCardProps {
   id: string;
   videoUrl: string;
@@ -80,6 +81,8 @@ const handleLikePress = async () => {
 
   try {
     const response = await API.post(`/video/like/${id}`, { liked: updatedLike });
+
+
     console.log('🟢 Like successful:', response.data);
   } catch (error: any) {
     console.error('🔴 Error liking video:', error.message);
@@ -113,7 +116,7 @@ const handleLikePress = async () => {
             )}
             <Video
               ref={videoRef}
-              source={{ uri: `http://172.20.10.6:5000/api/video/stream/${id}` }}
+              source={{ uri: `${API.defaults.baseURL}/video/stream/${id}` }}
               useNativeControls={false}
               resizeMode={ResizeMode.COVER}
               isLooping
@@ -164,7 +167,7 @@ export default VideoCard;
 
 const styles = StyleSheet.create({
   container: {
-    height: SCREEN_HEIGHT - 50,
+    height: SCREEN_HEIGHT,
     backgroundColor: '#1c1c1e',
     overflow: 'hidden',
     borderBottomWidth: 4,
@@ -172,7 +175,7 @@ const styles = StyleSheet.create({
   },
   videoWrapper: {
     width: '100%',
-    height: SCREEN_HEIGHT -50,
+    height: SCREEN_HEIGHT,
     backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
@@ -198,6 +201,7 @@ actionText: {
   video: {
     width: '100%',
     height: '100%',
+
   },
   thumbnail: {
     width: '100%',

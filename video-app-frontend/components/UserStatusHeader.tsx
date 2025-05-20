@@ -33,11 +33,12 @@ export default function UserStatusHeader() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 8,
+    paddingVertical: 10,
     paddingHorizontal: 10,
     borderBottomWidth: 0.5,
     borderBottomColor: '#ddd',
     backgroundColor: '#fff',
+    marginTop: 40,
   },
   statusContainer: {
     alignItems: 'center',
