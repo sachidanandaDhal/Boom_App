@@ -11,7 +11,6 @@ router.post('/upload', authenticateUser, upload.single('video'), videoController
 router.get('/', videoController.getVideos);
 router.get('/stream/:id', videoController.streamVideo);
 router.post('/like/:id', authenticateUser, videoController.likeVideo);
-router.post('/comment/:id', authenticateUser, videoController.addComment);
 // other routes...
 
 module.exports = router;

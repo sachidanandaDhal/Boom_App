@@ -92,32 +92,39 @@ exports.streamVideo = async (req, res) => {
 
 
 exports.likeVideo = async (req, res) => {
+   console.log('LikeVideo called with id:', req.params.id);
   try {
     const { id } = req.params;
-    const video = await Video.findByIdAndUpdate(id, { $inc: { likes: 1 } }, { new: true });
+    const { liked } = req.body; // expects boolean
+
+    if (typeof liked !== 'boolean') {
+      return res.status(400).json({ error: 'Missing or invalid "liked" boolean in request body' });
+    }
+
+    const increment = liked ? 1 : -1;
+
+    // Update likes count atomically, ensure it doesn't go below zero
+    const video = await Video.findByIdAndUpdate(
+      id,
+      { $inc: { likes: increment } },
+      { new: true }
+    );
+
     if (!video) return res.status(404).json({ error: 'Video not found' });
+
+    // Optional: prevent negative likes
+    if (video.likes < 0) {
+      video.likes = 0;
+      await video.save();
+    }
+
     res.json({ success: true, likes: video.likes });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to like video' });
+    console.error('Error liking video:', error);
+  
+    res.status(500).json({ error: 'Failed to like/unlike video' });
   }
 };
 
-exports.addComment = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { text } = req.body;
-    const userId = req.user?.userId;
 
-    if (!text) return res.status(400).json({ error: 'Comment text required' });
 
-    const video = await Video.findById(id);
-    if (!video) return res.status(404).json({ error: 'Video not found' });
-
-    video.comments.push({ user: userId, text });
-    await video.save();
-
-    res.json({ success: true, comments: video.comments });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to add comment' });
-  }
-};

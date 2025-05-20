@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, FlatList, RefreshControl, Alert, NativeScrollEvent, NativeSyntheticEvent, Dimensions } from 'react-native';
+import { View, FlatList, RefreshControl, Alert, Dimensions } from 'react-native';
 import API from '../utils/api';
 import { Video } from '../types';
+import UserStatusHeader from '../components/UserStatusHeader';
 import VideoCard from '../components/VideoCard';
+
 import NavBar from '../components/NavBar';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -55,7 +57,7 @@ export default function Home() {
 
   return (
     <View style={{ flex: 1 }}>
-      <NavBar />
+        <UserStatusHeader />
       <FlatList
         data={videos}
         keyExtractor={(item) => item._id}
@@ -81,6 +83,7 @@ export default function Home() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
+      <NavBar />
     </View>
   );
 }

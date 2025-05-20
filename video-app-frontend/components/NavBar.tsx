@@ -1,9 +1,8 @@
-// components/NavBar.tsx
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Feather } from '@expo/vector-icons';
 
 export default function NavBar() {
   const router = useRouter();
@@ -20,18 +19,21 @@ export default function NavBar() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => router.push('/home')} style={styles.titleContainer}>
-        <Ionicons name="home-outline" size={30} color="#4cd137" />
-        <Text style={styles.title}>Boom App</Text>
+      {/* Left: Home icon */}
+      <TouchableOpacity onPress={() => router.push('/home')} style={styles.iconButton}>
+        <Ionicons name="home-outline" size={26} color="#000" />
       </TouchableOpacity>
 
-      <View style={styles.rightButtons}>
-        <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/upload')}>
-          <Ionicons name="add-circle-outline" size={32} color="#0097e6" />
-        </TouchableOpacity>
+      {/* Center: Logo/Title */}
+      <Text style={styles.title}>Boom</Text>
 
-        <TouchableOpacity style={styles.iconButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={32} color="#e84118" />
+      {/* Right: Upload and Logout */}
+      <View style={styles.rightIcons}>
+        <TouchableOpacity onPress={() => router.push('/upload')} style={styles.iconButton}>
+          <Ionicons name="add-circle-outline" size={26} color="#000" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout} style={styles.iconButton}>
+          <Feather name="log-out" size={24} color="#000" />
         </TouchableOpacity>
       </View>
     </View>
@@ -40,36 +42,27 @@ export default function NavBar() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 10,           // increased padding top for height
-    paddingBottom: 10,        // increased padding bottom for height
-    paddingHorizontal: 25,
-    backgroundColor: 'green',  // very dark background
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    backgroundColor: '#fff',
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'center',
-
-    // subtle shadow for elevation
-  boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.3)',
-  elevation: 8, // Keep this for Android compatibility
-
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#ccc',
   },
   title: {
-    color: 'white',        // bright green text color for contrast
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginLeft: 6,
-  },
-  rightButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 20,
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#000',
+    letterSpacing: 1,
   },
   iconButton: {
-    padding: 8,
+    paddingHorizontal: 8,
+  },
+  rightIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
   },
 });
