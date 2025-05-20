@@ -1,15 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { View, FlatList, RefreshControl, Alert } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, FlatList, RefreshControl, Alert, NativeScrollEvent, NativeSyntheticEvent, Dimensions } from 'react-native';
 import API from '../utils/api';
 import { Video } from '../types';
 import VideoCard from '../components/VideoCard';
 import NavBar from '../components/NavBar';
 
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+
 export default function Home() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [currentVisibleIndex, setCurrentVisibleIndex] = useState(0);
 
-  // Fetch videos from backend
+  const onViewRef = useRef(({ viewableItems }: { viewableItems: any[] }) => {
+    // When viewable items change, update the index of currently visible video
+    if (viewableItems.length > 0) {
+      setCurrentVisibleIndex(viewableItems[0].index);
+    }
+  });
+
+  const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 80 });
+
   const fetchVideos = async () => {
     try {
       const response = await API.get<Video[]>('/video');
@@ -24,14 +35,12 @@ export default function Home() {
     fetchVideos();
   }, []);
 
-  // Refresh handler for pull-to-refresh
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchVideos();
     setRefreshing(false);
   };
 
-  // Handle liking a video
   const handleLike = async (id: string) => {
     try {
       await API.post(`/video/${id}/like`);
@@ -50,16 +59,22 @@ export default function Home() {
       <FlatList
         data={videos}
         keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
+        pagingEnabled // enables snap to page behavior for one full screen per video
+        snapToInterval={SCREEN_HEIGHT} // snaps scroll to screen height
+        decelerationRate="fast"
+        showsVerticalScrollIndicator={false}
+        onViewableItemsChanged={onViewRef.current}
+        viewabilityConfig={viewConfigRef.current}
+        renderItem={({ item, index }) => (
           <VideoCard
-            id={item._id} // <-- pass id here!
+            id={item._id}
             videoUrl={`http://192.168.1.100:5000/api${item.videoUrl}`}
-
             title={item.title}
             thumbnailUrl={item.thumbnailUrl}
             likes={item.likes}
-            liked={false} // Optional, if you track liked status
-            onLike={handleLike} // pass handler that accepts id
+            liked={false}
+            onLike={handleLike}
+            isActive={index === currentVisibleIndex} // <-- only play video if active
           />
         )}
         refreshControl={

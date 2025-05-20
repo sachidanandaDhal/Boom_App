@@ -49,11 +49,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
     // subtle shadow for elevation
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 8,
+  boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.3)',
+  elevation: 8, // Keep this for Android compatibility
+
   },
   titleContainer: {
     flexDirection: 'row',
